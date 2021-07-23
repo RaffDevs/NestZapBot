@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
-import { BotController } from './bot.controller';
-import { BotService } from './bot.service';
+import { BotController } from './controllers/bot.controller';
+import { CreateSessionService } from './services/create-session.service';
+import { MessageHandlerService } from './services/message-handler.service';
+
 
 @Module({
-  providers: [BotService],
+  providers: [
+    CreateSessionService, 
+    MessageHandlerService
+  ],
   controllers: [BotController]
 })
 export class BotModule {
