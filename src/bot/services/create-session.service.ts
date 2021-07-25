@@ -9,7 +9,7 @@ export class CreateSessionService {
 
   constructor( private messageHandler: MessageHandlerService ) {}
 
-  public exec(): void {
+  public async exec(): Promise<void> {
     create({
       headless: true,
 

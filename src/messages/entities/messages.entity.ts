@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { MessageContext } from "./message.model";
+import { MessageContext } from "../message.model";
 
 @Entity('messages')
-export class Message {
+export class MessageData {
   @PrimaryGeneratedColumn('increment')
-  id: Number
+  id?: Number
 
   @Column({nullable: false})
   contact: string;
@@ -12,8 +12,8 @@ export class Message {
   @Column()
   name: string;
 
-  @Column()
-  whatsapp_id: string;
+  @Column({nullable: true})
+  id_message?: string;
 
   @Column()
   message: string;
@@ -27,20 +27,20 @@ export class Message {
   @Column()
   type: string;
 
-  @Column()
-  media_path: string;
+  @Column({nullable: true})
+  media_path?: string;
 
   @Column({type: 'time with time zone', default: 'now()'})
-  timestamp: Date
+  timestamp?: Date
 
   @Column()
   context: MessageContext
 
-  @Column()
+  @Column({nullable: true})
   agent: string;
 
   @Column()
-  destiny: string;
+  departament_target: string;
   
   @Column()
   ticket: string;
