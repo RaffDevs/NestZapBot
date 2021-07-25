@@ -1,4 +1,3 @@
-import { Injectable } from "@nestjs/common";
 import { Client, Message, decryptMedia, ChatId } from '@open-wa/wa-automate';
 import { MessageContext } from "src/messages/message.model";
 import {v4 as v4} from 'uuid';
