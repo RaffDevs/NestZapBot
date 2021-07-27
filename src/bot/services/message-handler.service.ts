@@ -1,27 +1,21 @@
-import { Injectable, Inject } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Client } from "@open-wa/wa-automate";
-import { MessagesRepository } from "src/messages/repositories/messages.repository";
 import { MessageFactory } from "./message-factory.service";
 
 @Injectable()
 export class MessageHandlerService {
-  constructor( 
-     private messageRepository: MessagesRepository
-  ) { }
+
+  constructor( private messageFactory: MessageFactory ) { }
 
   async handleMessages(session: Client): Promise<void> {
     session.onMessage(async (message) => {
-      console.log('Mensagem entrante', message);
 
-      const messageFactory = new MessageFactory(
-        this.messageRepository,
-        message,
-        session
-      );
+      try {
+        const messageData = await this.messageFactory.buildMessage(session, message);
 
-      const messageData = await messageFactory.buildMessage();
-
-      console.log('Mensagem final', messageData);
+      } catch(error) {
+        console.log('Failed to process massage!', error);
+      }
 
     });
   }

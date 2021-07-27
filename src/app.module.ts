@@ -17,7 +17,6 @@ import { MessagesRepository } from './messages/repositories/messages.repository'
       username: 'raffdevs',
       password: 'yma2578k',
       database: 'zap_bot',
-      entities: ["dist/**/*.entity.js"],
       autoLoadEntities: true,
       synchronize: true
     }),

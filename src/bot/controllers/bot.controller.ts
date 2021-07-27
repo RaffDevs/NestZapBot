@@ -1,5 +1,4 @@
 import { Controller, Get } from '@nestjs/common';
-import { create, NotificationLanguage } from '@open-wa/wa-automate';
 import { CreateSessionService } from '../services/create-session.service';
 
 @Controller('bot')
@@ -11,6 +10,8 @@ export class BotController{
 
   @Get('')
   async initBot(): Promise<string> {
+    const dado = CreateSessionService.sessionWhats
+
     return this.createSession.exec().then(success => {
       console.log('OpenWA has been initialized!');
 

@@ -1,9 +1,8 @@
-import { Injectable } from "@nestjs/common";
 import { ChatId } from "@open-wa/wa-automate";
-import { Repository } from "typeorm";
+import { EntityRepository, Repository } from "typeorm";
 import { MessageData } from "../entities/messages.entity";
 
-@Injectable()
+@EntityRepository(MessageData)
 export class MessagesRepository extends Repository<MessageData> {
   
   async getLastMessage(contactID: ChatId): Promise<MessageData | undefined> {

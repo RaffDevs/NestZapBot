@@ -1,25 +1,27 @@
 import { Client, Message, decryptMedia, ChatId } from '@open-wa/wa-automate';
 import { MessageContext } from "src/messages/message.model";
-import {v4 as v4} from 'uuid';
+import { v4 as v4 } from 'uuid';
 import { MessagesRepository } from "src/messages/repositories/messages.repository";
 import { MessageData } from "src/messages/entities/messages.entity";
-import {extension} from 'mime';
-import {resolve} from 'path';
-import {writeFile} from 'fs';
+import { extension } from 'mime';
+import { resolve } from 'path';
+import { writeFile } from 'fs';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class MessageFactory {
+  private message: Message;
+  private session: Client;
 
   constructor(
-    private messageRepository: MessagesRepository,
-    private message: Message,
-    private session: Client,
-  ) {
-    this.messageRepository = messageRepository;
+    @InjectRepository(MessagesRepository)
+    private messageRepository: MessagesRepository
+  ) {}
+
+  public async buildMessage(session: Client, message: Message): Promise<MessageData> {
     this.message = message;
     this.session = session;
-  }
-
-  async buildMessage(): Promise<MessageData> {
 
     const lastMessage = await this.messageRepository.getLastMessage(this.message.from);
 
@@ -123,6 +125,8 @@ export class MessageFactory {
     const messageData = await this.messageRepository.saveMessage(message);
 
     await this.session.sendSeen(message.contact as ChatId);
+
+    console.log('Message is saved!');
     
     return messageData;
   }

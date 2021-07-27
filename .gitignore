@@ -32,3 +32,4 @@ lerna-debug.log*
 **.data.json
 **.node-persist**
 # end managed by open-wa
+/tokens
