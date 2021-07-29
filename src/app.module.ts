@@ -2,9 +2,8 @@ import { Module } from '@nestjs/common';
 import { MessagesModule } from './messages/messages.module';
 import { BotModule } from './bot/bot.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MessageFactory } from './bot/services/message-factory.service';
-import { MessagesRepository } from './messages/repositories/messages.repository';
-
+import { UraModule } from './ura/ura.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -20,9 +19,10 @@ import { MessagesRepository } from './messages/repositories/messages.repository'
       autoLoadEntities: true,
       synchronize: true
     }),
+    UraModule,
+    SchedulesModule,
   ],
   controllers: [],
-  providers: [
-  ],
+  providers: [],
 })
 export class AppModule {}

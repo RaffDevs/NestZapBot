@@ -9,14 +9,12 @@ export class MessageHandlerService {
 
   async handleMessages(session: Client): Promise<void> {
     session.onMessage(async (message) => {
-
-      try {
-        const messageData = await this.messageFactory.buildMessage(session, message);
-
-      } catch(error) {
-        console.log('Failed to process massage!', error);
-      }
-
+      await this.messageFactory.buildMessage(session, message)
+        .then(success => {
+          console.log('Message has been processed!');
+        }).catch(error => {
+          console.log('Error during message process!', error);
+        });
     });
   }
 }

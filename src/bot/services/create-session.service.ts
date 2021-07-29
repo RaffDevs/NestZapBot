@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Client, create, NotificationLanguage } from '@open-wa/wa-automate';
-import { resolve } from 'path';
 import { MessageHandlerService } from './message-handler.service';
 
 
 @Injectable()
 export class CreateSessionService {
+  public sessionWhats: Client;
 
   constructor( private messageHandler: MessageHandlerService ) {}
 
-  static sessionWhats: Client;
-
   public async exec(): Promise<void> {
-    console.log(resolve('./tokens/'));
     create({
       headless: true,
 
@@ -42,8 +39,8 @@ export class CreateSessionService {
 
     }).then(async session => {
       this.messageHandler.handleMessages(session);
-      
-      CreateSessionService.sessionWhats = session;
+
+      this.sessionWhats = session;
     });
   }
 }

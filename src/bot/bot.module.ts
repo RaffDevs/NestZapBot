@@ -5,6 +5,7 @@ import { BotController } from './controllers/bot.controller';
 import { CreateSessionService } from './services/create-session.service';
 import { MessageFactory } from './services/message-factory.service';
 import { MessageHandlerService } from './services/message-handler.service';
+import { SessionStatus } from './services/session-status.service';
 
 
 @Module({
@@ -13,6 +14,7 @@ import { MessageHandlerService } from './services/message-handler.service';
     MessageFactory,
     MessageHandlerService,
     CreateSessionService, 
+    SessionStatus
   ],
   controllers: [BotController]
 })

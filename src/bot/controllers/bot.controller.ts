@@ -1,17 +1,18 @@
 import { Controller, Get } from '@nestjs/common';
+import { SessionOverview } from '../interfaces/session-overview.interface';
 import { CreateSessionService } from '../services/create-session.service';
+import { SessionStatus } from '../services/session-status.service';
 
 @Controller('bot')
 export class BotController{
   
   constructor(
-    private createSession: CreateSessionService
+    private createSession: CreateSessionService,
+    private sessionStatus: SessionStatus
   ) { }
 
   @Get('')
   async initBot(): Promise<string> {
-    const dado = CreateSessionService.sessionWhats
-
     return this.createSession.exec().then(success => {
       console.log('OpenWA has been initialized!');
 
@@ -29,5 +30,12 @@ export class BotController{
       });
 
     });
+  }
+
+  @Get('/overview')
+  async getOverview(): Promise<SessionOverview> {
+    const overview = await this.sessionStatus.getOverview();
+    
+    return overview;
   }
 }
