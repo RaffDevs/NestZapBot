@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Client, create, NotificationLanguage } from '@open-wa/wa-automate';
-import { MessageHandlerService } from './message-handler.service';
+// import { MessageFactory } from 'src/messages/services/message-factory.service';
+// import { MessageHandlerService } from './message-handler.service';
 
 
 @Injectable()
 export class CreateSessionService {
   public sessionWhats: Client;
 
-  constructor( private messageHandler: MessageHandlerService ) {}
+  constructor( ) {}
 
-  public async exec(): Promise<void> {
-    create({
+  public async starSession(): Promise<Client | undefined> {
+    const session = await create({
       headless: true,
 
       sessionId: 'bot-whats',
@@ -37,10 +38,11 @@ export class CreateSessionService {
 
       sessionDataPath: './tokens',
 
-    }).then(async session => {
-      this.messageHandler.handleMessages(session);
-
-      this.sessionWhats = session;
     });
+
+    return session;
   }
 }
+
+
+// Separar o messageHandler e MessageFactory do module do BOT

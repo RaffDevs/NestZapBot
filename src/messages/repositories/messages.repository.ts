@@ -10,7 +10,6 @@ export class MessagesRepository extends Repository<MessageData> {
       where: {
         contact: contactID
       },
-
       order: {
         id: 'DESC'
       }

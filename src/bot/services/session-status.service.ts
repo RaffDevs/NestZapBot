@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
+import { Client } from "@open-wa/wa-automate";
 import { SessionOverview } from "../interfaces/session-overview.interface";
 import { CreateSessionService } from "./create-session.service";
 
 
 @Injectable()
 export class SessionStatus {
-  constructor( private createSession: CreateSessionService ) { }
+  
+  constructor() { }
 
-  public async getOverview(): Promise<SessionOverview> {
-    const session = this.createSession.sessionWhats;
-
+  public async getOverview(session: Client): Promise<SessionOverview> {
     const overview: SessionOverview = {
       isConnected: await session.isConnected(),
       isPhoneDisconnected: await session.isPhoneDisconnected(),

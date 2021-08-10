@@ -7,8 +7,6 @@ import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
-    MessagesModule, 
-    BotModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -19,8 +17,10 @@ import { SchedulesModule } from './schedules/schedules.module';
       autoLoadEntities: true,
       synchronize: true
     }),
+    MessagesModule, 
     UraModule,
     SchedulesModule,
+    BotModule,
   ],
   controllers: [],
   providers: [],
