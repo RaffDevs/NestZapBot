@@ -1,35 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { Client, create, NotificationLanguage } from '@open-wa/wa-automate';
-// import { MessageFactory } from 'src/messages/services/message-factory.service';
-// import { MessageHandlerService } from './message-handler.service';
-
+import { MessageContext } from 'src/messages/message.model';
+import { MessageFactory } from 'src/messages/services/message-factory.service';
+import { UraFactory } from 'src/ura/services/ura-factory.service';
 
 @Injectable()
 export class CreateSessionService {
-  public sessionWhats: Client;
+  private sessionWhats: Client;
 
-  constructor( ) {}
+  constructor(
+    private messageFactory: MessageFactory,
+    private uraFactory: UraFactory
+  ) { }
 
-  public async starSession(): Promise<Client | undefined> {
-    const session = await create({
+  public get session() {
+    return this.sessionWhats;
+  }
+
+  public set setSession(session: Client) {
+    this.sessionWhats = session;
+  }
+
+  public async startSession(): Promise<void> {
+
+    await create({
       headless: true,
 
       sessionId: 'bot-whats',
-    
+
       authTimeout: 60,
-    
+
       blockCrashLogs: true,
-    
+
       disableSpins: true,
-    
+
       hostNotificationLang: NotificationLanguage.PTBR,
-    
+
       logConsole: false,
 
       logFile: true,
-    
+
       qrTimeout: 0,
-      
+
       cacheEnabled: false,
 
       executablePath: '/usr/bin/google-chrome',
@@ -38,10 +50,38 @@ export class CreateSessionService {
 
       sessionDataPath: './tokens',
 
-    });
+    }).then(async session => {
+      this.sessionWhats = session;
 
-    return session;
-  }
+      session.onMessage(async message => {
+        try {
+          const msg = await this.messageFactory.buildMessage(session, message);
+
+          await this.uraFactory.buildUra(
+            session,
+            message,
+            msg
+          );
+
+          if (msg.context === MessageContext.WAITING) {
+            await this.uraFactory.checkTime();
+            await this.uraFactory.initUra();
+
+          } else if (msg.context === MessageContext.URA_ANSWER) {
+            await this.uraFactory.matchUraOption();
+
+          } else if (msg.context === MessageContext.RATING) {
+            // Implementing rating
+          }
+
+          await this.messageFactory.saveMessage(msg);
+
+        } catch (error) {
+          console.log('[Error] An error ocorred while in processing message', error);
+        }
+      });
+    });
+  };
 }
 
 

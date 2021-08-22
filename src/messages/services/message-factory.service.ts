@@ -1,4 +1,5 @@
-import { Client, Message, decryptMedia, ChatId } from '@open-wa/wa-automate';
+import { Client, Message, ChatId } from '@open-wa/wa-automate';
+import { decryptMedia } from '@open-wa/wa-decrypt';
 import { MessageContext } from "src/messages/message.model";
 import { v4 as v4 } from 'uuid';
 import { MessagesRepository } from "src/messages/repositories/messages.repository";
@@ -46,7 +47,7 @@ export class MessageFactory {
       await this.buildMediaMessage(this.message, messageData);
     }
 
-    return this.saveMessage(messageData);
+    return messageData;
 
   }
 
@@ -119,15 +120,19 @@ export class MessageFactory {
       console.log('File has been writed!');
     });
 
+  };
+
+  public async updateUraMessage(contactID: ChatId, departament: string): Promise<void> {
+    await this.messageRepository.updateUraMessageToWaiting(contactID, departament);
   }
 
-  private async saveMessage(message: MessageData): Promise<MessageData> {
+  public async saveMessage(message: MessageData): Promise<MessageData> {
     const messageData = await this.messageRepository.saveMessage(message);
 
     await this.session.sendSeen(message.contact as ChatId);
 
-    console.log('Message is saved!');
+    console.log('Message has been saved!');
     
     return messageData;
-  }
+  };
 }

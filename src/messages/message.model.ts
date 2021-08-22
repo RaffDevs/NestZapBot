@@ -4,5 +4,6 @@ export enum MessageContext {
   FINISHED = "FINISHED",
   URA = "URA",
   URA_ANSWER = "URA_ANSWER",
+  INVALID = "INVALID",
   RATING = "RATING"
 }

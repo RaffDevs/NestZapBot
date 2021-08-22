@@ -1,10 +1,10 @@
 import { ScheduleGroup } from "src/schedules/entities/schedule-group.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('ura')
 export class Ura {
   @PrimaryGeneratedColumn('increment')
-  id?: Number
+  id?: number
 
   @Column({ nullable: false })
   name: string;
@@ -30,7 +30,8 @@ export class Ura {
   @Column()
   out_hour_media: string;
 
-  @OneToOne(() => ScheduleGroup)
-  id_hour_group: ScheduleGroup
+  @ManyToOne(() => ScheduleGroup, groupSchedule => groupSchedule.id)
+  @JoinColumn({ name: 'id_group_schedule'})
+  id_group_schedule: number
 }
 

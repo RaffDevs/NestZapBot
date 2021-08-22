@@ -6,13 +6,14 @@ import { MessagesRepository } from './repositories/messages.repository';
 import { MessageFactory } from './services/message-factory.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MessagesRepository])],
+  imports: [
+    TypeOrmModule.forFeature([MessagesRepository]),
+  ],
   providers: [
-    MessagesService,
     MessageFactory
   ],
-  controllers: [MessagesController],
+  controllers: [],
   exports: [MessageFactory]
 })
 
-export class MessagesModule {}
+export class MessagesModule { }

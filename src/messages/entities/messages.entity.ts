@@ -4,7 +4,7 @@ import { MessageContext } from "../message.model";
 @Entity('messages')
 export class MessageData {
   @PrimaryGeneratedColumn('increment')
-  id?: Number
+  id?: number
 
   @Column({nullable: false})
   contact: string;

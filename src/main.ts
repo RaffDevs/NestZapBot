@@ -4,9 +4,9 @@ import * as express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(5000);
-
   app.use('/downloads', express.static('../media/downloads'));
   app.use('/uploads', express.static('../media/uploads'));
+  await app.listen(5000);
+
 }
 bootstrap();
