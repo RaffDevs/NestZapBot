@@ -1,6 +1,4 @@
 import { Controller, Get } from '@nestjs/common';
-import { MessageFactory } from 'src/messages/services/message-factory.service';
-import { UraFactory } from 'src/ura/services/ura-factory.service';
 import { SessionOverview } from '../interfaces/session-overview.interface';
 import { CreateSessionService } from '../services/create-session.service';
 import { SessionStatus } from '../services/session-status.service';
@@ -10,7 +8,6 @@ export class BotController{
 
   constructor(
     private createSession: CreateSessionService,
-    private messageFactory: MessageFactory,
     private sessionStatus: SessionStatus,
   ) { }
 

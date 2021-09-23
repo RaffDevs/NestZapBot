@@ -1,0 +1,14 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "zap-bot",
+      "database": "zap_bot",
+      "username": "raffdevs",
+      "password": "yma2578k"
+    }
+  ]
+}

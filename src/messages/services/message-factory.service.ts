@@ -1,10 +1,9 @@
-import { Client, Message, ChatId } from '@open-wa/wa-automate';
-import { decryptMedia } from '@open-wa/wa-decrypt';
+import { Client, Message, ChatId, decryptMedia } from '@open-wa/wa-automate';
 import { MessageContext } from "src/messages/message.model";
 import { v4 as v4 } from 'uuid';
 import { MessagesRepository } from "src/messages/repositories/messages.repository";
 import { MessageData } from "src/messages/entities/messages.entity";
-import { extension } from 'mime';
+import * as mimeType from 'mime-types';
 import { resolve } from 'path';
 import { writeFile } from 'fs';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +17,7 @@ export class MessageFactory {
   constructor(
     @InjectRepository(MessagesRepository)
     private messageRepository: MessagesRepository
-  ) {}
+  ) { }
 
   public async buildMessage(session: Client, message: Message): Promise<MessageData> {
     this.message = message;
@@ -35,7 +34,7 @@ export class MessageFactory {
       isNew: true,
       type: this.message.type,
       media_path: null,
-      context: MessageContext.WAITING,
+      context: MessageContext.NEW,
       agent: null,
       departament_target: 'atendimento', // Alterar para departamento no db
       ticket: v4()
@@ -55,15 +54,10 @@ export class MessageFactory {
     if (lastMessage) {
       messageData.name = lastMessage.name;
 
-      switch(lastMessage.context) {
+      switch (lastMessage.context) {
         case MessageContext.IN_PROGRESS:
           messageData.agent = lastMessage.agent;
           messageData.context = lastMessage.context;
-          messageData.ticket = lastMessage.ticket;
-          messageData.departament_target = lastMessage.departament_target;
-          break;
-
-        case MessageContext.WAITING:
           messageData.ticket = lastMessage.ticket;
           messageData.departament_target = lastMessage.departament_target;
           break;
@@ -79,22 +73,28 @@ export class MessageFactory {
           messageData.context = lastMessage.context;
           break;
 
+        case MessageContext.FINISHED:
+          messageData.context = MessageContext.NEW;
+          break;
+
         default:
           messageData.context = MessageContext.WAITING;
+          messageData.ticket = lastMessage.ticket;
+          messageData.departament_target = lastMessage.departament_target;
           break;
       }
-      
+
     } else {
-      messageData.context = MessageContext.WAITING;
+      messageData.context = MessageContext.NEW;
     }
 
   }
 
   private async buildMediaMessage(whatsMessage: Message, messageData: MessageData) {
     const id = whatsMessage.id.split('_')[2];
-    const mediaName = `${whatsMessage.from}_${id}_${extension(whatsMessage.mimetype)}`;
-    const mediaPath = resolve(`../../media/downloads/${mediaName}`);
-    
+    const mediaName = `${whatsMessage.from}_${id}_${mimeType.extension(whatsMessage.mimetype)}`;
+    const mediaPath = resolve(`media/downloads/${mediaName}`);
+
     messageData.media_path = `downloads/${mediaName}`;
 
     if (whatsMessage.type === 'ptt' || whatsMessage.type === 'audio') {
@@ -110,7 +110,7 @@ export class MessageFactory {
       messageData.message = 'Other';
     }
 
-    const buffer = await decryptMedia(messageData);
+    const buffer = await decryptMedia(whatsMessage);
 
     await writeFile(mediaPath, buffer, (err) => {
       if (err) {
@@ -127,12 +127,16 @@ export class MessageFactory {
   }
 
   public async saveMessage(message: MessageData): Promise<MessageData> {
-    const messageData = await this.messageRepository.saveMessage(message);
 
-    await this.session.sendSeen(message.contact as ChatId);
+    if (message.context !== MessageContext.INVALID) {
+      const messageData = await this.messageRepository.saveMessage(message);
 
-    console.log('Message has been saved!');
-    
-    return messageData;
+      await this.session.sendSeen(message.contact as ChatId);
+
+      console.log('Message has been saved!');
+
+      return messageData;
+    }
+
   };
 }

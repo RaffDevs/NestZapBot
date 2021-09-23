@@ -1,9 +1,9 @@
-enum uraLevel {
+export enum uraLevel {
   MAIN = "MAIN",
   SUB = "SUB"
 }
 
-enum applications {
+export enum applications {
   DEPARTAMENT = "DEPARTAMENT",
   MENU = "MENU"
 }

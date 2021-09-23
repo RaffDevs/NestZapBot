@@ -1,5 +1,6 @@
 import { ScheduleGroup } from "src/schedules/entities/schedule-group.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { uraLevel } from "../models/ura.model";
 
 @Entity('ura')
 export class Ura {
@@ -18,20 +19,26 @@ export class Ura {
   @Column()
   after_option_message: string;
 
+  @Column({ nullable: true })
+  unmatch_option_message: string;
+
   @Column()
   body_text: string;
 
-  @Column({ nullable: false })
+  @Column()
   level: uraLevel;
 
-  @Column()
+  @Column({ nullable: true })
   greetings_media: string;
 
-  @Column()
+  @Column({ nullable: true })
   out_hour_media: string;
+
+  @Column({ name: 'id_group_schedule'})
+  id_group_schedule: number;
 
   @ManyToOne(() => ScheduleGroup, groupSchedule => groupSchedule.id)
   @JoinColumn({ name: 'id_group_schedule'})
-  id_group_schedule: number
+  group_schedule: ScheduleGroup
 }
 

@@ -1,4 +1,5 @@
 export enum MessageContext {
+  NEW = "NEW_CHAT",
   IN_PROGRESS = "IN_PROGRESS",
   WAITING = "WAITING",
   FINISHED = "FINISHED",

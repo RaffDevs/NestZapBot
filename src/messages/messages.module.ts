@@ -1,18 +1,23 @@
-import { Module } from '@nestjs/common';
-import { MessagesService } from './services/messages.service';
+import { forwardRef, Module } from '@nestjs/common';
 import { MessagesController } from './messages.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MessagesRepository } from './repositories/messages.repository';
 import { MessageFactory } from './services/message-factory.service';
+import { BotModule } from 'src/bot/bot.module';
+import { MessageDataSubscriber } from './subscriber/message.subscriber';
+import { MessageDelivery } from './services/message-delivery.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([MessagesRepository]),
+    forwardRef(() => BotModule)
   ],
   providers: [
-    MessageFactory
+    MessageFactory,
+    MessageDelivery,
+    MessageDataSubscriber
   ],
-  controllers: [],
+  controllers: [MessagesController],
   exports: [MessageFactory]
 })
 

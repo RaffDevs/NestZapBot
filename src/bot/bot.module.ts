@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { BotController } from './controllers/bot.controller';
 import { SessionStatus } from './services/session-status.service';
 import { MessagesModule } from 'src/messages/messages.module';
@@ -8,7 +8,7 @@ import { UraModule } from 'src/ura/ura.module';
 
 @Module({
   imports: [
-    MessagesModule,
+    forwardRef(() => MessagesModule),
     UraModule
   ],
   providers: [
@@ -16,6 +16,7 @@ import { UraModule } from 'src/ura/ura.module';
     SessionStatus,
   ], 
   controllers: [BotController],
+  exports: [CreateSessionService]
 })
 export class BotModule {
   

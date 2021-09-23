@@ -33,3 +33,4 @@ lerna-debug.log*
 **.node-persist**
 # end managed by open-wa
 /tokens
+zap-bot.session.sql

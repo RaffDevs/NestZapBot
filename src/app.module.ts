@@ -8,6 +8,7 @@ import { ScheduleGroup } from './schedules/entities/schedule-group.entity';
 import { Schedules } from './schedules/entities/schedules.entity';
 import { Ura } from './ura/entities/ura.entity';
 import { UraOptions } from './ura/entities/options-ura.entity';
+import { MessageDataSubscriber } from './messages/subscriber/message.subscriber';
 
 @Module({
   imports: [
@@ -20,6 +21,9 @@ import { UraOptions } from './ura/entities/options-ura.entity';
       database: 'zap_bot',
       synchronize: true,
       autoLoadEntities: true,
+      subscribers: [
+        MessageDataSubscriber
+      ],
       entities: [
         Schedules,
         ScheduleGroup,

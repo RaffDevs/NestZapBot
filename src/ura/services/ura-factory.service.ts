@@ -10,6 +10,7 @@ import { UraOptionsRepository } from "../repositories/ura-options.repository";
 import { UraRepository } from "../repositories/ura.repository";
 import { MessageContext } from "src/messages/message.model";
 import { MessageFactory } from "src/messages/services/message-factory.service";
+import { applications } from '../models/ura.model';
 import path from 'path';
 
 
@@ -44,8 +45,8 @@ export class UraFactory {
 
   public async checkTime(): Promise<void> {
     if (this.mainSchedule.length < 1) {
+      
       if (this.mainUra.out_hour_media) {
-
         await this.sessionWhats.sendImage(
           this.messageWhats.from,
           path.resolve(`media/auto/${this.mainUra.out_hour_media}`),
@@ -70,6 +71,7 @@ export class UraFactory {
 
   public async initUra(): Promise<void> {
     if (this.mainUra.greetings_media) {
+
       await this.sessionWhats.sendImage(
         this.messageWhats.from,
         path.resolve(`media/auto/${this.mainUra.greetings_media}`),
@@ -130,11 +132,12 @@ export class UraFactory {
     } else if (matchSubMenuOption) {
       // Sub menu to implement
     } else {
+      console.log('[ ] Invalid option');
       this.messageData.context = MessageContext.INVALID;
 
       await this.sessionWhats.sendText(
         this.messageWhats.from,
-        'Opção invalida! Digite uma opção valida por favor!'
+        this.mainUra.unmatch_option_message
       );
     }
   }

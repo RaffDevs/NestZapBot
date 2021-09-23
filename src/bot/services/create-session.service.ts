@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Client, create, NotificationLanguage } from '@open-wa/wa-automate';
 import { MessageContext } from 'src/messages/message.model';
 import { MessageFactory } from 'src/messages/services/message-factory.service';
@@ -9,7 +9,9 @@ export class CreateSessionService {
   private sessionWhats: Client;
 
   constructor(
+    @Inject(forwardRef(() => MessageFactory))
     private messageFactory: MessageFactory,
+
     private uraFactory: UraFactory
   ) { }
 
@@ -54,35 +56,35 @@ export class CreateSessionService {
       this.sessionWhats = session;
 
       session.onMessage(async message => {
-        try {
-          const msg = await this.messageFactory.buildMessage(session, message);
+        if (!message.isGroupMsg) {
+          try {
+            const msg = await this.messageFactory.buildMessage(session, message);
 
-          await this.uraFactory.buildUra(
-            session,
-            message,
-            msg
-          );
+            await this.uraFactory.buildUra(
+              session,
+              message,
+              msg
+            );
 
-          if (msg.context === MessageContext.WAITING) {
-            await this.uraFactory.checkTime();
-            await this.uraFactory.initUra();
+            if (msg.context === MessageContext.NEW) {
+              await this.uraFactory.checkTime();
+              await this.uraFactory.initUra();
 
-          } else if (msg.context === MessageContext.URA_ANSWER) {
-            await this.uraFactory.matchUraOption();
+            } else if (msg.context === MessageContext.URA_ANSWER) {
+              await this.uraFactory.matchUraOption();
 
-          } else if (msg.context === MessageContext.RATING) {
-            // Implementing rating
+            } else if (msg.context === MessageContext.RATING) {
+              // Implementar avaliação
+            }
+
+            await this.messageFactory.saveMessage(msg);
+
+          } catch (error) {
+            console.log('[Error] An error ocorred while in processing message', error);
           }
-
-          await this.messageFactory.saveMessage(msg);
-
-        } catch (error) {
-          console.log('[Error] An error ocorred while in processing message', error);
         }
+
       });
     });
   };
 }
-
-
-// Separar o messageHandler e MessageFactory do module do BOT

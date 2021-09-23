@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Ura } from "./ura.entity";
+import { applications } from "../models/ura.model";
 
 @Entity('ura_options')
 export class UraOptions {

@@ -1,12 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { AfterInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { MessageContext } from "../message.model";
+import { v4 as v4 } from 'uuid';
+
 
 @Entity('messages')
 export class MessageData {
   @PrimaryGeneratedColumn('increment')
   id?: number
 
-  @Column({nullable: false})
+  @Column()
   contact: string;
 
   @Column()
@@ -42,7 +44,7 @@ export class MessageData {
   @Column()
   departament_target: string;
   
-  @Column()
+  @Column({ default: v4() })
   ticket: string;
 
 }
